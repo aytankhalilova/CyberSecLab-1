@@ -18,14 +18,22 @@ Before proceeding, ensure that:
 2. **Configure Horizon:**
 
     - Edit the `/etc/openstack-dashboard/local_settings.py` file to set the `OPENSTACK_HOST` to point to your controller node:
+    
     ![Dashboard Screenshot](./images/controller.png)
+    
     - Configure `ALLOWED_HOSTS` to include the hostnames or IP addresses that can access the dashboard:
+    
     ![Dashboard Screenshot](./images/allowed-hosts.png)
+    
     - Set up session storage using Memcached by configuring the `SESSION_ENGINE` and `CACHES` settings.
+    
     ![Dashboard Screenshot](./images/memcached.png) 
+    
     - Enable the Identity API version 3 by setting `OPENSTACK_KEYSTONE_URL`.
     - Enable support for domains and configure API versions as needed:
+    
     ![Dashboard Screenshot](./images/api-version.png) 
+    
     - Optionally, configure the time zone by setting the `TIME_ZONE` variable.
 
 3. **Finalize Installation:**
