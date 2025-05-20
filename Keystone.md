@@ -29,9 +29,10 @@ Use the package manager to install Keystone and its dependencies.
 
 ### **3. Configure Keystone**  
 
-- Edit the **Keystone configuration file** (`/etc/keystone/keystone.conf`) to set database connection parameters.  
+- Edit the **Keystone configuration file** (`/etc/keystone/keystone.conf`) to set database connection parameters:
+![Dashboard Screenshot](./images/db-connect.png) 
 - Configure the **token provider** and other necessary settings.  
-
+![Dashboard Screenshot](./images/token.png) 
 ### **4. Populate the Identity Service Database**  
 Synchronize the database schema using the following command:  
 
@@ -42,10 +43,13 @@ keystone-manage db_sync
 Set up Fernet keys for token signing and credential encryption.  
 
 ### **6. Bootstrap the Identity Service**  
-Initialize Keystone with administrative credentials and service endpoints.  
+Initialize Keystone with administrative credentials and service endpoints:
+![Dashboard Screenshot](./images/bootstap.png)
+
 
 ### **7. Configure the Apache HTTP Server**  
-- Set the ServerName directive in the Apache configuration.  
+- Set the ServerName directive in the Apache configuration. 
+![Dashboard Screenshot](./images/apache2.png)
 - Enable necessary modules for Keystone integration.  
 
 ### **8. Restart Apache**  
