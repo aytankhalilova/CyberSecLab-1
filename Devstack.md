@@ -43,6 +43,7 @@ A sample `local.conf` file is available in the `samples` directory of the reposi
 #### 5. Start the Installation
 
 Run the installation script `stack.sh`. The installation typically takes 15 to 30 minutes depending on your internet speed, as many git repositories and packages are downloaded and installed.
+
 ![Dashboard](./images/openstack.png)
 ---
 
