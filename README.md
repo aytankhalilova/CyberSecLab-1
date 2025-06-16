@@ -1,7 +1,7 @@
 # Secure Authentication Strategies in Private Cloud Infrastructure
 
 ## Overview
-This research explores **Risk-Based Authentication (RBA)** as a security enhancement for **private cloud infrastructures**, focusing on its integration within **OpenStack**. Traditional authentication mechanisms, such as **password-based authentication**, remain vulnerable to attacks like **credential stuffing and password spraying**. RBA offers a dynamic and **context-aware** security solution by evaluating user behavior and login context to **strengthen authentication without disrupting usability**.
+This research explores **Risk-Based Authentication (RBA)** as a security enhancement for **private cloud infrastructures**, focusing on its integration within **OpenStack**. Traditional authentication mechanisms, such as **password-based authentication**, remain vulnerable to identity-based attacks. RBA offers a dynamic and **context-aware** security solution by evaluating user behavior and login context to **strengthen authentication without disrupting usability**.
 
 ## Key Highlights
 - **Risk-Based Authentication (RBA)**: A security model that adapts authentication requirements based on user behavior and contextual factors.
@@ -26,9 +26,11 @@ This research and implementation environment is built using **VMware Workstation
 - **Storage:** 50 GB
 
 ### **Remote Management**
+
 - **Kali Linux 2021.3** is used for **SSH-based management** of the Ubuntu server.
 - SSH configuration enables **secure remote access** for administrative tasks and monitoring.
 
 ## Installation & Implementation
+
 For detailed installation and integration steps, please refer to [Implementation](Devstack.md).
 
