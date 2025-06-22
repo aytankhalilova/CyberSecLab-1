@@ -38,12 +38,14 @@ Create a `local.conf` file at the root of the DevStack repository with a minimal
 
 A sample `local.conf` file is available in the `samples` directory of the repository.
 ![Dashboard](./images/samples.png)
+
 ---
 
 #### 5. Start the Installation
 
 Run the installation script `stack.sh`. The installation typically takes 15 to 30 minutes depending on your internet speed, as many git repositories and packages are downloaded and installed.
 ![Dashboard](./images/openstack.png)
+
 ---
 
 ### Reference
@@ -56,4 +58,4 @@ For detailed instructions and additional configuration options, please consult t
 ---
 ### After Installation
 
-Once OpenStack is successfully deployed using DevStack, you need to set up [**Keystone**](Keystone.md) and [**Horizon**](Horizon.md)
+Once OpenStack is successfully deployed using DevStack, you need to set up [**Keystone-RBA-Plugin**](Keystone.md) and [**Horizon-RBA-Plugin**](Horizon.md)

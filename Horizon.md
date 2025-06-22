@@ -1,45 +1,113 @@
-# **OpenStack Horizon Installation Guide**
+# **Integration of Horizon RBA Plugin**
 
-This document provides a high-level overview of installing and configuring the OpenStack Dashboard, Horizon, on an Ubuntu system. For comprehensive, step-by-step instructions, please refer to the official OpenStack documentation.
 
-## Prerequisites
+## **Overview**  
+This document provides a high-level overview of installing and configuring  **Horizon RBA Plugin**  
 
-Before proceeding, ensure that:
+---
 
-- You have administrative access to the Ubuntu system.
-- The system is updated and has access to the necessary repositories.
-- The Identity service (Keystone) is properly installed and configured.
-- The Apache HTTP server and Memcached service are installed and running.
+## **Prerequisites**  
+
+Before proceeding, ensure that: 
+- Install the Keystoneauth Fork
+
+    Before installing the RBA plugin, you must replace the standard Keystoneauth library with a fork that includes the RBA method. To do this, clone the custom Keystoneauth repository and install it:
+    
+
+    ```bash
+    git clone https://github.com/das-group/keystoneauth.git
+    cd keystoneauth
+    pip install -r requriments.txt
+    pip install .
+    ``` 
+
+    ![Dashboard Screenshot](./images/keystoneauth.png)
 
 ## Installation Steps
 
-1. **Install Horizon Package:** Use the package manager to install Horizon and its dependencies.
+### Step 1: Clone and Install the Plugin:
 
-2. **Configure Horizon:**
 
-    - Edit the `/etc/openstack-dashboard/local_settings.py` file to set the `OPENSTACK_HOST` to point to your controller node:
-    ![Dashboard Screenshot](./images/controller.png)
-    - Configure `ALLOWED_HOSTS` to include the hostnames or IP addresses that can access the dashboard:
-    ![Dashboard Screenshot](./images/allowed-hosts.png)
-    - Set up session storage using Memcached by configuring the `SESSION_ENGINE` and `CACHES` settings.
-    ![Dashboard Screenshot](./images/memcached.png) 
-    - Enable the Identity API version 3 by setting `OPENSTACK_KEYSTONE_URL`.
-    - Enable support for domains and configure API versions as needed:
-    ![Dashboard Screenshot](./images/api-version.png) 
-    - Optionally, configure the time zone by setting the `TIME_ZONE` variable.
+```bash
+git https://github.com/das-group/password-rba-horizon.git
+cd keystone-rba-plugin
+pip install -r requriments.txt
+pip install .
+```
 
-3. **Finalize Installation:**
+![Dashboard Screenshot](./images/horizonrba1.png)
 
-    - Restart the Apache service to apply the changes:
+![Dashboard Screenshot](./images/horizonrba2.png)
 
-      ```bash
-      sudo service apache2 restart
-      ```
+### Enable the Plugin in Horizon
 
-  
+1. Copy the plugin configuration file:
+
+   ```bash
+   cp enabled/_3091_password_rba_horizon.py horizon/openstack_dashboard/local/enabled/
+    ```
+
+    ![Dashboard Screenshot](./images/horizonrba3.png)
+
+2. Restart the Horizon web server to activate the plugin:
+
+    ```bash 
+    sudo systemctl restart apache2  # or your configured WSGI server
+    ```
+
+    ![Dashboard Screenshot](./images/horizonrba4.png)
+
+### Enabling RTT Feature (Optional)
+
+To enable Round-Trip-Time (RTT) measurement via WebSockets:
+
+1. **Install the Daphne web server**:
+
+   ```bash
+   sudo pip intall daphne
+    ```
+
+2. **Place `sgi.py`next to Horizon’s `wsgi.py`**:
+
+    `
+    horizon/openstack_dashboard/asgi.py
+    `
+3. **Update `settings.py` with ASGI support**:
+
+    ```python
+    ASGI_APPLICATION = 'openstack_dashboard.asgi.application'
+    ```
+
+ 4. **Enable Cached Sessions Instead of Cookie-Only Sessions**:
+
+    Update the Horizon `settings.py` file with the following configuration:
+
+    ```python
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': 'controller:11211',
+        },
+    }
+    ```
+5. **Start the Asynchronous Web Server**:
+
+    Run the Daphne server to enable WebSocket support:
+
+    ```bash
+    daphne -b 0.0.0.0 -p 8000 openstack_dashboard.asgi:application
+    ```
+
+    ![Dashboard Screenshot](./images/horizonrba5.png)
+
+     ![Dashboard Screenshot](./images/horizon.png)
+
+
 
 ## Reference
 
-For detailed instructions and additional configuration options, please consult the official OpenStack documentation:
+For detailed instructions and additional configuration options, please consult the following GItHub repository:  
 
-[**Horizon Installation Tutorial for Ubuntu**](https://docs.openstack.org/horizon/latest/install/install-ubuntu.html)
+[**Integration of Horizon RBA Plugin in Openstack**](https://github.com/das-group/keystone-rba-plugin/tree/main) 

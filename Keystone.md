@@ -1,66 +1,88 @@
-# **OpenStack Keystone Installation Guide**
+# **Integration of Keystone RBA Plugin**
 
 
 ## **Overview**  
-This document provides a high-level overview of installing and configuring the OpenStack Identity service, **Keystone**, on an Ubuntu system.  
-For comprehensive, step-by-step instructions, please refer to the official OpenStack documentation.
+This document provides a high-level overview of installing and configuring  **Keystone RBA Plugin**  
 
 ---
 
 ## **Prerequisites**  
 
-Before proceeding, ensure that:  
+Before proceeding, ensure that: 
+- Install the Keystoneauth Fork
 
-- You have **administrative access** to the Ubuntu system.  
-- The system is **updated** and has access to the necessary repositories.  
-- A functioning **SQL database** (e.g., **MariaDB** or **MySQL**) is available. 
-- The **Apache2 web server** is installed for handling Keystone requests. 
-- The **OpenStack packages** are installed and properly configured.  
+    Before installing the RBA plugin, you must replace the standard Keystoneauth library with a fork that includes the RBA method. To do this, clone the custom Keystoneauth repository and install it:
+    
+
+    ```bash
+    git clone https://github.com/das-group/keystoneauth.git
+    cd keystoneauth
+    pip install -r requriments.txt
+    pip install .
+    ``` 
+
+    ![Dashboard Screenshot](./images/keystoneauth.png)
 
 ---
 
 ## **Installation Steps**  
 
-### **1. Create the Keystone Database**  
-Set up a dedicated database for Keystone and grant appropriate permissions.  
+### Step 1: Clone and Install the Plugin
 
-### **2. Install Keystone Packages**  
-Use the package manager to install Keystone and its dependencies.  
-
-### **3. Configure Keystone**  
-
-- Edit the **Keystone configuration file** (`/etc/keystone/keystone.conf`) to set database connection parameters:
-![Dashboard Screenshot](./images/db-connect.png) 
-- Configure the **token provider** and other necessary settings.  
-![Dashboard Screenshot](./images/token.png) 
-### **4. Populate the Identity Service Database**  
-Synchronize the database schema using the following command:  
-
-```sh
-keystone-manage db_sync
+```bash
+git clone https://github.com/das-group/keystone-rba-plugin.git
+cd keystone-rba-plugin
+pip install -r requriments.txt
+pip install .
 ```
-### **5. Initialize Fernet Key Repositories**  
-Set up Fernet keys for token signing and credential encryption.  
 
-### **6. Bootstrap the Identity Service**  
-Initialize Keystone with administrative credentials and service endpoints:
-![Dashboard Screenshot](./images/bootstap.png)
+![Dashboard Screenshot](./images/keystonerba1.png)
 
+![Dashboard Screenshot](./images/keystonerba2.png)
 
-### **7. Configure the Apache HTTP Server**  
-- Set the ServerName directive in the Apache configuration. 
-![Dashboard Screenshot](./images/apache2.png)
-- Enable necessary modules for Keystone integration.  
+### Step 2: Database Migration
 
-### **8. Restart Apache**  
+The RBA plugin adds a new table to track authentication history. Follow these steps to apply the necessary database changes:
 
-Apply the changes by restarting the Apache service:  
+1. **Locate the migration files** in the plugin repository:
 
-```sh
-service apache2 restart
+   - `etc/sql/legacy_migrations/contract_repo/080_contract_add_rba_history_table.py`
+   - `etc/sql/legacy_migrations/data_migration_repo/080_migrate_add_rba_history_table.py`
+   - `etc/sql/legacy_migrations/expand_repo/080_expand_add_rba_history_table.py`
+
+2. **Copy each file** to the corresponding Keystone migration directories:
+
+   - Move to: `keystone/common/sql/legacy_migrations/contract_repo/versions/`
+   - Move to: `keystone/common/sql/legacy_migrations/data_migration_repo/versions/`
+   - Move to: `keystone/common/sql/legacy_migrations/expand_repo/versions/`
+
+        ![Dashboard Screenshot](./images/keystonerba3.png)
+
+3. **Check for conflicting version numbers** in those directories.  
+   If `080_*.py` already exists, update the number (e.g., `081_`) to the next available unused version.
+
+4. **Apply the migration** 
+
+Run database migrations:
+
+   ```bash
+   sudo keystone-manage db_sync
+   ```
+
+![Dashboard Screenshot](./images/keystonerba4.png)
+
+### Step 3: Restart the Keysone
+
+ Restart the Keystone service inside DevStack:
+
+```bash
+sudo systemctl restart devstack@keystone
 ```
+
+![Dashboard Screenshot](./images/keystonerba5.png)
+
 ## **Reference**  
 
-For detailed instructions and additional configuration options, please consult the official OpenStack documentation:  
+For detailed instructions and additional configuration options, please consult the following GItHub repository:  
 
-[**Keystone Installation Tutorial for Ubuntu**](https://docs.openstack.org/keystone/latest/install/keystone-install-ubuntu.html) 
+[**Integration of Keystone RBA Plugin in Openstack**](https://github.com/das-group/keystone-rba-plugin/tree/main) 
