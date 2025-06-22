@@ -37,6 +37,7 @@ Clone the DevStack repository and navigate into it.
 Create a `local.conf` file at the root of the DevStack repository with a minimal configuration including preset passwords for ADMIN, DATABASE, RABBIT, and SERVICE. Use only alphanumeric characters in passwords to avoid service issues.
 
 A sample `local.conf` file is available in the `samples` directory of the repository.
+
 ![Dashboard](./images/samples.png)
 
 ---
